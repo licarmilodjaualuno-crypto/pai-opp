@@ -43,16 +43,76 @@ button { color: inherit; }
 @keyframes floatIn { from { opacity:0; transform: translateY(22px) scale(.7);} to {opacity:1; transform:translateY(0) scale(1);} }
 @keyframes float { 50% { transform: translateY(-8px);} }
 
+.loading-screen,
+.auth-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+}
+.loading-screen { color: var(--muted); }
+.auth-card {
+  width: min(100%, 430px);
+  padding: 28px;
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(17,24,45,.97), rgba(10,15,30,.98));
+  border: 1px solid var(--line);
+  box-shadow: 0 30px 90px rgba(0,0,0,.35), 0 0 50px rgba(124,58,237,.08);
+}
+.auth-logo {
+  width: max-content;
+  font-size: 3rem;
+  font-weight: 1000;
+  letter-spacing: -.08em;
+  background: linear-gradient(100deg,#60a5fa,#a78bfa,#22d3ee);
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+.auth-kicker { margin: 3px 0 24px; color: #c4b5fd; font-size: .83rem; text-transform: uppercase; letter-spacing: .12em; }
+.auth-card h1 { margin: 0; font-size: 1.7rem; }
+.auth-copy { margin: 8px 0 22px; color: var(--muted); line-height: 1.55; }
+.auth-form { display: grid; gap: 14px; }
+.auth-form label { display: grid; gap: 7px; color: #dbeafe; font-size: .87rem; }
+.auth-form input {
+  width: 100%;
+  border: 1px solid var(--line);
+  outline: 0;
+  border-radius: 15px;
+  padding: 12px 13px;
+  color: white;
+  background: var(--panel-soft);
+}
+.auth-form input:focus { border-color: rgba(96,165,250,.7); box-shadow: 0 0 0 3px rgba(37,99,235,.12); }
+.primary-button {
+  margin-top: 4px;
+  border: 0;
+  border-radius: 15px;
+  padding: 13px 16px;
+  font-weight: 800;
+  cursor: pointer;
+  background: linear-gradient(90deg,var(--blue),var(--purple));
+  box-shadow: 0 12px 28px rgba(79,70,229,.25);
+}
+.primary-button:disabled { opacity: .6; cursor: wait; }
+.link-button { width: 100%; margin-top: 13px; border: 0; background: transparent; color: #93c5fd; cursor: pointer; padding: 9px; }
+.auth-message { margin: 14px 0 0; color: #c4b5fd; font-size: .86rem; line-height: 1.45; }
+
 .app-shell { width: min(100%, 760px); margin: 0 auto; min-height: 100vh; padding: 18px 16px 98px; }
 .topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; padding: 8px 2px 20px; }
 .eyebrow { margin:0; color:var(--muted); font-size:.76rem; text-transform:uppercase; letter-spacing:.13em; }
 .topbar h1 { margin: 2px 0 0; font-size: 2rem; line-height:1; background:linear-gradient(90deg,#60a5fa,#a78bfa); color:transparent; background-clip:text; -webkit-background-clip:text; }
 .top-actions { display:flex; gap:8px; }
-.top-actions button { width:42px; height:42px; border-radius:14px; border:1px solid var(--line); background:rgba(17,24,45,.8); display:grid; place-items:center; }
+.top-actions button { width:42px; height:42px; border-radius:14px; border:1px solid var(--line); background:rgba(17,24,45,.8); display:grid; place-items:center; cursor:pointer; }
 .notification-button { position:relative; }
 .notification-button span { position:absolute; width:8px; height:8px; border-radius:50%; background:#f43f5e; top:8px; right:8px; box-shadow:0 0 0 3px #11182d; }
 
 .content-card { background:linear-gradient(180deg,rgba(17,24,45,.94),rgba(12,18,35,.98)); border:1px solid var(--line); border-radius:26px; padding:18px; box-shadow:0 24px 70px rgba(0,0,0,.28); }
+.account-strip { margin: -4px 0 16px; padding: 10px 12px; border-radius: 15px; display:flex; justify-content:space-between; align-items:center; gap:12px; background:rgba(37,99,235,.08); border:1px solid rgba(96,165,250,.12); }
+.account-strip > div { display:flex; align-items:center; gap:9px; min-width:0; }
+.account-strip strong { font-size:.82rem; color:#dbeafe; }
+.account-strip span { font-size:.76rem; color:var(--muted); }
+.owner-chip { padding:4px 8px; border-radius:999px; font-weight:900; color:#ddd6fe !important; background:rgba(124,58,237,.18); border:1px solid rgba(167,139,250,.3); letter-spacing:.08em; }
 .section-heading { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
 .section-heading h2 { margin:0; font-size:1.45rem; }
 .section-heading p { margin:5px 0 0; color:var(--muted); font-size:.9rem; }
