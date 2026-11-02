@@ -18,9 +18,10 @@ import AdminDashboardOverlay from './AdminDashboardOverlay'
 import AdminAccessRestore from './AdminAccessRestore'
 import ProfileAvatarSync from './ProfileAvatarSync'
 import SocialFeaturesFixV2 from './SocialFeaturesFixV2'
+import NeonStoreOverlay from './NeonStoreOverlay'
 import './pai-final-theme.css'
 import './reference-match.css'
 
 export default function AppWithPoints(){
-  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/><AdminDashboardOverlay/><AdminAccessRestore/><ProfileAvatarSync/><SocialFeaturesFixV2/></>
+  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/><AdminDashboardOverlay/><AdminAccessRestore/><ProfileAvatarSync/><SocialFeaturesFixV2/><NeonStoreOverlay/></>
 }
