@@ -1,28 +1,25 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Bell, Gamepad2, Home, LogOut, MessageCircle, Search, ShieldCheck, Trophy, UserRound, UsersRound } from 'lucide-react'
+import {
+  Bell, Gamepad2, Home, LogOut, MessageCircle, Search, Send, ShieldCheck,
+  ShoppingBag, Trophy, UserRound, UsersRound, Gift, Package, Plus, Crown,
+  Settings, Swords, Save, Coins, Gem
+} from 'lucide-react'
 import { supabase } from './lib/supabase'
 
-const chats = [
-  { name: 'Ana Souza', rank: 'Ouro 2', message: 'Bora jogar depois? 🎮', time: '18:42', unread: 2, online: true },
-  { name: 'Carlos M.', rank: 'Prata 3', message: 'Vi sua nova foto 😄', time: '17:58', unread: 0, online: true },
-  { name: 'Maya', rank: 'Diamante 1', message: 'Mandou muito no quiz!', time: '16:31', unread: 1, online: false },
-  { name: 'Rafael', rank: 'Bronze 2', message: 'Até amanhã!', time: '14:07', unread: 0, online: false }
-]
-
-const groups = [
-  { name: 'Turma PAI', members: 23, message: 'Novo desafio no grupo 🎯', time: '18:10' },
-  { name: 'Gamers da Noite', members: 41, message: 'Quem fecha Quatro em Linha?', time: '17:22' }
+const NAV = [
+  ['home', Home, 'Início'],
+  ['games', Gamepad2, 'Jogos'],
+  ['chat', MessageCircle, 'Conversas'],
+  ['ranking', Trophy, 'Ranking'],
+  ['profile', UserRound, 'Perfil'],
 ]
 
 function Splash({ onDone }) {
   return (
     <button className="splash" onClick={onDone} aria-label="Entrar no PAI">
-      <div className="orbit orbit-one">💬</div>
-      <div className="orbit orbit-two">🎮</div>
-      <div className="orbit orbit-three">💎</div>
-      <div className="orbit orbit-four">🏆</div>
-      <div className="orbit orbit-five">👑</div>
-      <div className="logo-mark">PAI</div>
+      <div className="orbit orbit-one">💬</div><div className="orbit orbit-two">🎮</div>
+      <div className="orbit orbit-three">💎</div><div className="orbit orbit-four">🏆</div>
+      <div className="orbit orbit-five">👑</div><div className="logo-mark">PAI</div>
       <span>toque para entrar</span>
     </button>
   )
@@ -35,236 +32,188 @@ function AuthScreen() {
   const [displayName, setDisplayName] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-
-  async function handleSubmit(event) {
-    event.preventDefault()
-    setLoading(true)
-    setMessage('')
-
+  async function submit(e) {
+    e.preventDefault(); setLoading(true); setMessage('')
     try {
       if (mode === 'signup') {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { full_name: displayName.trim() || email.split('@')[0] }
-          }
-        })
+        const { error } = await supabase.auth.signUp({ email, password, options: { data: { full_name: displayName.trim() || email.split('@')[0] } } })
         if (error) throw error
-        setMessage('Conta criada. Se o Supabase pedir confirmação, verifique seu e-mail.')
+        setMessage('Conta criada. Se for solicitado, confirme o e-mail e depois entre.')
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
       }
-    } catch (error) {
-      setMessage(error.message || 'Não foi possível continuar.')
-    } finally {
-      setLoading(false)
-    }
+    } catch (err) { setMessage(err.message || 'Não foi possível continuar.') }
+    finally { setLoading(false) }
   }
+  return <div className="auth-shell"><div className="auth-card">
+    <div className="auth-logo">PAI</div><p className="auth-kicker">Converse. Jogue. Evolua.</p>
+    <h1>{mode === 'login' ? 'Entrar na sua conta' : 'Criar uma nova conta'}</h1>
+    <form className="auth-form" onSubmit={submit}>
+      {mode === 'signup' && <label>Nome<input value={displayName} onChange={e=>setDisplayName(e.target.value)} maxLength={40} required /></label>}
+      <label>E-mail<input type="email" value={email} onChange={e=>setEmail(e.target.value)} required /></label>
+      <label>Senha<input type="password" value={password} onChange={e=>setPassword(e.target.value)} minLength={6} required /></label>
+      <button className="primary-button" disabled={loading}>{loading ? 'Carregando...' : mode === 'login' ? 'Entrar' : 'Criar conta'}</button>
+    </form>
+    {message && <p className="auth-message">{message}</p>}
+    <button className="link-button" onClick={()=>{setMode(mode==='login'?'signup':'login');setMessage('')}}>{mode==='login'?'Ainda não tenho conta':'Já tenho uma conta'}</button>
+  </div></div>
+}
 
-  return (
-    <div className="auth-shell">
-      <div className="auth-card">
-        <div className="auth-logo">PAI</div>
-        <p className="auth-kicker">Converse. Jogue. Evolua.</p>
-        <h1>{mode === 'login' ? 'Entrar na sua conta' : 'Criar uma nova conta'}</h1>
-        <p className="auth-copy">
-          {mode === 'login'
-            ? 'Entre com seu e-mail e senha para continuar.'
-            : 'Crie sua conta e comece no Bronze 1.'}
-        </p>
+function Panel({ title, subtitle, children, action }) {
+  return <section className="content-card"><div className="section-heading"><div><h2>{title}</h2>{subtitle&&<p>{subtitle}</p>}</div>{action}</div>{children}</section>
+}
 
-        <form className="auth-form" onSubmit={handleSubmit}>
-          {mode === 'signup' && (
-            <label>
-              Nome
-              <input value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="Seu nome" maxLength={40} />
-            </label>
-          )}
-          <label>
-            E-mail
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="voce@exemplo.com" required />
-          </label>
-          <label>
-            Senha
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Sua senha" minLength={6} required />
-          </label>
-          <button className="primary-button" type="submit" disabled={loading}>
-            {loading ? 'Carregando...' : mode === 'login' ? 'Entrar' : 'Criar conta'}
-          </button>
-        </form>
+function Wallet({ wallet }) {
+  return <div className="wallet-mini"><span>🪙 {(wallet?.coins??0).toLocaleString('pt-BR')}</span><span>💎 {(wallet?.diamonds??0).toLocaleString('pt-BR')}</span></div>
+}
 
-        {message && <p className="auth-message">{message}</p>}
-
-        <button className="link-button" onClick={() => {
-          setMode(mode === 'login' ? 'signup' : 'login')
-          setMessage('')
-        }}>
-          {mode === 'login' ? 'Ainda não tenho conta' : 'Já tenho uma conta'}
-        </button>
-      </div>
+function HomePage({ account, wallet, onDaily, dailyMessage }) {
+  return <Panel title={`Olá, ${account?.display_name || 'jogador'} 👋`} subtitle="Seu espaço no PAI." action={<Wallet wallet={wallet}/>}>
+    <div className="hero-grid">
+      <div className="rank-card"><span>Patente atual</span><strong>{account?.rank_name || 'Bronze 1'}</strong><b>{(account?.points||0).toLocaleString('pt-BR')} pts</b></div>
+      <button className="daily-card" onClick={onDaily}><Gift/><strong>Recompensa diária</strong><span>500–1000 moedas + bônus</span></button>
     </div>
-  )
+    {dailyMessage && <p className="notice">{dailyMessage}</p>}
+    <div className="feature-grid">
+      <div><MessageCircle/><b>Chat real</b><span>Mensagens e grupos</span></div>
+      <div><Trophy/><b>67 patentes</b><span>Bronze 1 até Rei</span></div>
+      <div><ShoppingBag/><b>Loja</b><span>Itens e cosméticos</span></div>
+      <div><Swords/><b>Jogos</b><span>4 modos no PAI</span></div>
+    </div>
+  </Panel>
 }
 
-function ChatRow({ chat }) {
-  return (
-    <button className="chat-row">
-      <div className="avatar-wrap">
-        <div className="avatar">{chat.name.slice(0, 1)}</div>
-        {chat.online && <span className="online-dot" />}
-      </div>
-      <div className="chat-main">
-        <div className="chat-line">
-          <strong>{chat.name}</strong>
-          <span>{chat.time}</span>
-        </div>
-        <div className="chat-line secondary">
-          <span className="rank-badge">{chat.rank}</span>
-          <span className="message-preview">{chat.message}</span>
-          {chat.unread > 0 && <span className="unread">{chat.unread}</span>}
-        </div>
-      </div>
-    </button>
-  )
-}
-
-function GroupRow({ group }) {
-  return (
-    <button className="chat-row">
-      <div className="avatar group-avatar"><UsersRound size={20} /></div>
-      <div className="chat-main">
-        <div className="chat-line">
-          <strong>{group.name}</strong>
-          <span>{group.time}</span>
-        </div>
-        <div className="chat-line secondary">
-          <span>{group.members} membros</span>
-          <span className="message-preview">{group.message}</span>
-        </div>
-      </div>
-    </button>
-  )
-}
-
-export default function App() {
-  const [showSplash, setShowSplash] = useState(true)
-  const [tab, setTab] = useState('conversas')
-  const [query, setQuery] = useState('')
-  const [session, setSession] = useState(null)
-  const [account, setAccount] = useState(null)
-  const [authLoading, setAuthLoading] = useState(true)
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session)
-      setAuthLoading(false)
-    })
-
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession)
-      if (!nextSession) setAccount(null)
-    })
-
-    return () => listener.subscription.unsubscribe()
-  }, [])
-
-  useEffect(() => {
-    if (!session?.user?.id) return
-
-    async function loadAccount() {
-      const userId = session.user.id
-      const [profileResult, walletResult, roleResult] = await Promise.all([
-        supabase.from('profiles').select('display_name, rank_name, points, avatar_url').eq('user_id', userId).single(),
-        supabase.from('wallets').select('coins, diamonds').eq('user_id', userId).single(),
-        supabase.from('user_roles').select('role').eq('user_id', userId).single(),
-      ])
-
-      setAccount({
-        profile: profileResult.data,
-        wallet: walletResult.data,
-        role: roleResult.data?.role || 'user',
-      })
+function ChatPage({ userId }) {
+  const [profiles,setProfiles]=useState([]), [convos,setConvos]=useState([]), [selected,setSelected]=useState(null)
+  const [messages,setMessages]=useState([]), [text,setText]=useState(''), [q,setQ]=useState(''), [groupName,setGroupName]=useState('')
+  const [msg,setMsg]=useState('')
+  async function load() {
+    const { data: ps } = await supabase.from('profiles').select('user_id,display_name,rank_name').neq('user_id',userId).order('display_name')
+    setProfiles(ps||[])
+    const { data: memberships } = await supabase.from('conversation_members').select('conversation_id').eq('user_id',userId)
+    const ids=(memberships||[]).map(x=>x.conversation_id)
+    if (!ids.length) return setConvos([])
+    const { data: cs } = await supabase.from('conversations').select('*').in('id',ids).order('created_at',{ascending:false})
+    const { data: ms } = await supabase.from('conversation_members').select('conversation_id,user_id,member_role').in('conversation_id',ids)
+    const memberIds=[...new Set((ms||[]).map(x=>x.user_id))]
+    const { data: memberProfiles } = memberIds.length ? await supabase.from('profiles').select('user_id,display_name,rank_name').in('user_id',memberIds) : {data:[]}
+    const map=Object.fromEntries((memberProfiles||[]).map(p=>[p.user_id,p]))
+    setConvos((cs||[]).map(c=>({ ...c, members:(ms||[]).filter(m=>m.conversation_id===c.id).map(m=>({...m,profile:map[m.user_id]})) })))
+  }
+  useEffect(()=>{load()},[userId])
+  useEffect(()=>{
+    if(!selected) return
+    async function loadMessages(){
+      const { data }=await supabase.from('messages').select('*').eq('conversation_id',selected.id).order('created_at',{ascending:true}).limit(200)
+      setMessages(data||[])
     }
+    loadMessages()
+    const channel=supabase.channel(`messages-${selected.id}`).on('postgres_changes',{event:'INSERT',schema:'public',table:'messages',filter:`conversation_id=eq.${selected.id}`},payload=>setMessages(old=>old.some(m=>m.id===payload.new.id)?old:[...old,payload.new])).subscribe()
+    return ()=>supabase.removeChannel(channel)
+  },[selected?.id])
+  async function startDirect(other){
+    const { data,error }=await supabase.rpc('create_direct_conversation',{other_user:other.user_id})
+    if(error) return setMsg(error.message)
+    await load(); const { data:c }=await supabase.from('conversations').select('*').eq('id',data).single(); setSelected(c)
+  }
+  async function createGroup(){
+    if(!groupName.trim()) return
+    const { data,error }=await supabase.rpc('create_group_conversation',{group_title:groupName.trim()})
+    if(error) return setMsg(error.message)
+    setGroupName(''); await load(); const { data:c }=await supabase.from('conversations').select('*').eq('id',data).single(); setSelected(c)
+  }
+  async function send(){
+    if(!text.trim()||!selected) return
+    const body=text.trim(); setText('')
+    const { error }=await supabase.from('messages').insert({conversation_id:selected.id,sender_id:userId,body})
+    if(error) setMsg(error.message)
+  }
+  const filtered=profiles.filter(p=>(p.display_name||'').toLowerCase().includes(q.toLowerCase()))
+  if(selected) return <Panel title={selected.kind==='group'?(selected.title||'Grupo'):'Conversa'} subtitle="Mensagens normais expiram após 48 horas.">
+    <button className="back-btn" onClick={()=>setSelected(null)}>← Voltar</button>
+    <div className="message-box">{messages.map(m=><div key={m.id} className={`bubble ${m.sender_id===userId?'mine':''}`}><span>{m.body}</span><small>{new Date(m.created_at).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}</small></div>)}</div>
+    <div className="composer"><input value={text} onChange={e=>setText(e.target.value)} onKeyDown={e=>e.key==='Enter'&&send()} placeholder="Digite uma mensagem"/><button onClick={send}><Send size={18}/></button></div>
+  </Panel>
+  return <Panel title="Conversas" subtitle="Fale com usuários reais e crie grupos.">
+    {msg&&<p className="notice">{msg}</p>}
+    <div className="group-create"><input value={groupName} onChange={e=>setGroupName(e.target.value)} placeholder="Nome do novo grupo"/><button onClick={createGroup}><Plus size={17}/> Criar grupo</button></div>
+    <div className="chat-layout"><div><h3>Suas conversas</h3>{convos.length===0&&<p className="muted">Nenhuma conversa ainda.</p>}{convos.map(c=>{
+      const other=c.kind==='direct'?c.members?.find(m=>m.user_id!==userId)?.profile:null
+      return <button className="chat-row" key={c.id} onClick={()=>setSelected(c)}><div className="avatar">{(c.kind==='group'?c.title:other?.display_name||'?').slice(0,1)}</div><div className="chat-main"><strong>{c.kind==='group'?c.title:other?.display_name||'Usuário'}</strong><span>{c.kind==='group'?'Grupo':other?.rank_name||''}</span></div></button>
+    })}</div><div><h3>Encontrar pessoas</h3><div className="search-box"><Search size={17}/><input value={q} onChange={e=>setQ(e.target.value)} placeholder="Buscar usuário"/></div>{filtered.slice(0,12).map(p=><button className="chat-row" key={p.user_id} onClick={()=>startDirect(p)}><div className="avatar">{(p.display_name||'?').slice(0,1)}</div><div className="chat-main"><strong>{p.display_name||'Usuário'}</strong><span>{p.rank_name}</span></div></button>)}</div></div>
+  </Panel>
+}
 
-    loadAccount()
-  }, [session])
+const gameInfo=[['tic_tac_toe','Jogo da Velha','600 pts por vitória'],['connect_four','Quatro em Linha','800 pts por vitória'],['quiz','Quiz','700 pts no multiplayer'],['memory','Memória','650 pts no multiplayer']]
+function GamesPage(){
+  const [active,setActive]=useState(null),[board,setBoard]=useState(Array(9).fill('')),[turn,setTurn]=useState('X'),[status,setStatus]=useState('Sua vez')
+  function play(i){
+    if(active!=='tic_tac_toe'||board[i]||status.includes('venceu')||status.includes('Empate')) return
+    const b=[...board]; b[i]=turn; const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
+    const win=wins.some(w=>w.every(x=>b[x]===turn)); if(win){setBoard(b);setStatus(`${turn} venceu!`);return}
+    if(b.every(Boolean)){setBoard(b);setStatus('Empate!');return}
+    setBoard(b);setTurn(turn==='X'?'O':'X');setStatus(`Vez de ${turn==='X'?'O':'X'}`)
+  }
+  return <Panel title="Jogos" subtitle="Os quatro modos oficiais do PAI."><div className="game-grid">{gameInfo.map(g=><button key={g[0]} onClick={()=>{setActive(g[0]);setBoard(Array(9).fill(''));setTurn('X');setStatus('Sua vez')}}><Gamepad2/><b>{g[1]}</b><span>{g[2]}</span></button>)}</div>{active==='tic_tac_toe'&&<div className="game-demo"><h3>Jogo da Velha</h3><p>{status}</p><div className="ttt">{board.map((v,i)=><button key={i} onClick={()=>play(i)}>{v}</button>)}</div><button className="secondary-button" onClick={()=>{setBoard(Array(9).fill(''));setTurn('X');setStatus('Sua vez')}}>Recomeçar</button></div>}{active&&active!=='tic_tac_toe'&&<p className="notice">Modo preparado na estrutura do PAI. A interface multiplayer será ligada ao sistema de partidas na próxima rodada de acabamento.</p>}</Panel>
+}
 
-  const filteredChats = useMemo(
-    () => chats.filter((chat) => chat.name.toLowerCase().includes(query.toLowerCase())),
-    [query]
-  )
+function RankingPage({ userId }){
+  const [rows,setRows]=useState([]),[ranks,setRanks]=useState([])
+  useEffect(()=>{(async()=>{const [{data:p},{data:r}]=await Promise.all([supabase.from('profiles').select('user_id,display_name,rank_name,points').order('points',{ascending:false}).limit(100),supabase.from('ranks').select('*').order('level')]);setRows(p||[]);setRanks(r||[])})()},[])
+  return <Panel title="Ranking" subtitle={`Sistema oficial com ${ranks.length||67} patentes.`}><div className="ranking-list">{rows.map((r,i)=><div className={`ranking-row ${r.user_id===userId?'me':''}`} key={r.user_id}><b>#{i+1}</b><div><strong>{r.display_name||'Usuário'}</strong><span>{r.rank_name}</span></div><em>{(r.points||0).toLocaleString('pt-BR')} pts</em></div>)}</div><details className="rank-details"><summary>Ver todas as 67 patentes</summary><div className="rank-grid">{ranks.map(r=><span key={r.level}><b>{r.level}. {r.name}</b><small>{r.min_points.toLocaleString('pt-BR')} pts</small></span>)}</div></details></Panel>
+}
 
-  if (showSplash) return <Splash onDone={() => setShowSplash(false)} />
-  if (authLoading) return <div className="loading-screen">Carregando PAI...</div>
-  if (!session) return <AuthScreen />
+function StorePage({ wallet,onWalletRefresh }){
+  const [items,setItems]=useState([]),[inventory,setInventory]=useState([]),[msg,setMsg]=useState('')
+  async function load(){const [{data:i},{data:inv}]=await Promise.all([supabase.from('store_items').select('*').eq('active',true).order('coin_price'),supabase.from('inventory').select('item_id,quantity,equipped')]);setItems(i||[]);setInventory(inv||[])}
+  useEffect(()=>{load()},[])
+  async function buy(id){const {error}=await supabase.rpc('buy_store_item',{p_item_id:id});setMsg(error?error.message:'Compra concluída!');if(!error){await load();onWalletRefresh()}}
+  return <Panel title="Loja e inventário" subtitle="Compras são validadas no servidor." action={<Wallet wallet={wallet}/>}><div className="store-grid">{items.map(i=><div className="store-item" key={i.id}><Package/><b>{i.name}</b><span>{i.rarity}</span><p>{i.coin_price>0&&`🪙 ${i.coin_price.toLocaleString('pt-BR')} `}{i.diamond_price>0&&`💎 ${i.diamond_price}`}</p><button onClick={()=>buy(i.id)}>Comprar</button></div>)}</div>{msg&&<p className="notice">{msg}</p>}<h3>Seu inventário</h3><div className="inventory-list">{inventory.length?inventory.map(x=><span key={x.item_id}>{x.item_id} × {x.quantity}</span>):<p className="muted">Você ainda não possui itens.</p>}</div></Panel>
+}
 
-  const displayName = account?.profile?.display_name || session.user.email?.split('@')[0] || 'Usuário'
-  const rankName = account?.profile?.rank_name || 'Bronze 1'
-  const points = account?.profile?.points ?? 0
-  const coins = account?.wallet?.coins ?? 0
-  const diamonds = account?.wallet?.diamonds ?? 0
-  const isOwner = account?.role === 'owner'
+function ProfilePage({ account,setAccount,isOwner,onGoStore,onGoAdmin }){
+  const [name,setName]=useState(account?.display_name||''),[bio,setBio]=useState(account?.bio||''),[msg,setMsg]=useState('')
+  async function save(){const {error}=await supabase.from('profiles').update({display_name:name.trim(),bio}).eq('user_id',account.user_id);if(error)setMsg(error.message);else{setAccount(a=>({...a,display_name:name.trim(),bio}));setMsg('Perfil salvo.')}}
+  return <Panel title="Perfil" subtitle="Sua identidade dentro do PAI."><div className="profile-card"><div className="big-avatar">{(name||'?').slice(0,1)}</div><div><h3>{name||'Usuário'}</h3><span>{account?.rank_name} • {(account?.points||0).toLocaleString('pt-BR')} pts</span>{isOwner&&<b className="owner-chip">OWNER</b>}</div></div><div className="profile-form"><label>Nome<input value={name} onChange={e=>setName(e.target.value)} maxLength={40}/></label><label>Bio<textarea value={bio} onChange={e=>setBio(e.target.value)} maxLength={200}/></label><button className="primary-button" onClick={save}><Save size={18}/> Salvar perfil</button></div>{msg&&<p className="notice">{msg}</p>}<div className="profile-actions"><button onClick={onGoStore}><ShoppingBag/> Loja e inventário</button>{isOwner&&<button onClick={onGoAdmin}><ShieldCheck/> Painel administrativo</button>}</div></Panel>
+}
 
-  return (
-    <div className="app-shell">
-      <header className="topbar">
-        <div>
-          <p className="eyebrow">olá, {displayName}</p>
-          <h1>PAI</h1>
-        </div>
-        <div className="top-actions">
-          {isOwner && <button aria-label="Painel administrativo" title="Administrador"><ShieldCheck size={21} /></button>}
-          <button aria-label="Notificações" className="notification-button"><Bell size={21} /><span /></button>
-          <button aria-label="Sair da conta" onClick={() => supabase.auth.signOut()}><LogOut size={20} /></button>
-        </div>
-      </header>
+function ClansPage({ feature,wallet }){
+  const [name,setName]=useState(''),[tag,setTag]=useState(''),[msg,setMsg]=useState('')
+  async function create(){const {error}=await supabase.rpc('create_clan',{p_name:name,p_tag:tag});setMsg(error?error.message:'Clã criado!')}
+  if(!feature) return <Panel title="Clãs" subtitle="Estrutura pronta, lançamento controlado pelo administrador."><div className="locked"><Crown size={48}/><h3>Clãs em breve</h3><p>O recurso está instalado, mas ainda bloqueado para os usuários.</p></div></Panel>
+  return <Panel title="Clãs" subtitle="Diamante 1+ • custo de 500 diamantes" action={<Wallet wallet={wallet}/>}><div className="group-create"><input value={name} onChange={e=>setName(e.target.value)} placeholder="Nome do clã"/><input value={tag} onChange={e=>setTag(e.target.value)} placeholder="TAG" maxLength={6}/><button onClick={create}>Criar</button></div>{msg&&<p className="notice">{msg}</p>}</Panel>
+}
 
-      <main className="content-card">
-        <div className="account-strip">
-          <div>
-            <strong>{rankName}</strong>
-            <span>{points.toLocaleString('pt-BR')} pontos</span>
-          </div>
-          {isOwner && <span className="owner-chip">OWNER</span>}
-        </div>
+function AdminPage({ onRefresh }){
+  const [users,setUsers]=useState([]),[flags,setFlags]=useState([]),[msg,setMsg]=useState(''),[deltas,setDeltas]=useState({})
+  async function load(){const [{data:p},{data:w},{data:r},{data:f}]=await Promise.all([supabase.from('profiles').select('*').order('created_at'),supabase.from('wallets').select('*'),supabase.from('user_roles').select('*'),supabase.from('feature_flags').select('*')]);const wm=Object.fromEntries((w||[]).map(x=>[x.user_id,x])),rm=Object.fromEntries((r||[]).map(x=>[x.user_id,x.role]));setUsers((p||[]).map(x=>({...x,wallet:wm[x.user_id],role:rm[x.user_id]})));setFlags(f||[])}
+  useEffect(()=>{load()},[])
+  async function adjust(u){const d=deltas[u.user_id]||{};const {error}=await supabase.rpc('admin_adjust_user',{p_user_id:u.user_id,p_points_delta:Number(d.points||0),p_coins_delta:Number(d.coins||0),p_diamonds_delta:Number(d.diamonds||0),p_reason:'Ajuste pelo painel PAI'});setMsg(error?error.message:'Valores atualizados.');if(!error){setDeltas(x=>({...x,[u.user_id]:{}}));load();onRefresh()}}
+  async function toggle(flag){const {error}=await supabase.rpc('admin_set_feature',{p_key:flag.key,p_enabled:!flag.enabled});setMsg(error?error.message:'Recurso atualizado.');if(!error)load()}
+  return <Panel title="Painel administrativo" subtitle="Somente a conta OWNER tem acesso."><div className="flags">{flags.map(f=><button key={f.key} onClick={()=>toggle(f)}><Settings/><span>{f.key}</span><b>{f.enabled?'ATIVO':'BLOQUEADO'}</b></button>)}</div>{msg&&<p className="notice">{msg}</p>}<div className="admin-users">{users.map(u=><div className="admin-user" key={u.user_id}><div><strong>{u.display_name||'Usuário'}</strong><span>{u.rank_name} • {u.role}</span><small>🪙 {u.wallet?.coins||0} • 💎 {u.wallet?.diamonds||0} • 🏆 {u.points||0}</small></div><div className="adjust-grid"><input type="number" placeholder="± pontos" value={deltas[u.user_id]?.points||''} onChange={e=>setDeltas(d=>({...d,[u.user_id]:{...d[u.user_id],points:e.target.value}}))}/><input type="number" placeholder="± moedas" value={deltas[u.user_id]?.coins||''} onChange={e=>setDeltas(d=>({...d,[u.user_id]:{...d[u.user_id],coins:e.target.value}}))}/><input type="number" placeholder="± diamantes" value={deltas[u.user_id]?.diamonds||''} onChange={e=>setDeltas(d=>({...d,[u.user_id]:{...d[u.user_id],diamonds:e.target.value}}))}/><button onClick={()=>adjust(u)}>Aplicar</button></div></div>)}</div></Panel>
+}
 
-        <div className="section-heading">
-          <div>
-            <h2>Conversas</h2>
-            <p>Fale com seus amigos e entre nos grupos.</p>
-          </div>
-          <div className="wallet-mini">
-            <span>🪙 {coins.toLocaleString('pt-BR')}</span>
-            <span>💎 {diamonds.toLocaleString('pt-BR')}</span>
-          </div>
-        </div>
-
-        <div className="search-box">
-          <Search size={18} />
-          <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Buscar conversa" />
-        </div>
-
-        <div className="segmented">
-          <button className={tab === 'conversas' ? 'active' : ''} onClick={() => setTab('conversas')}>Amigos</button>
-          <button className={tab === 'grupos' ? 'active' : ''} onClick={() => setTab('grupos')}>Grupos</button>
-        </div>
-
-        <section className="chat-list">
-          {tab === 'conversas'
-            ? filteredChats.map((chat) => <ChatRow key={chat.name} chat={chat} />)
-            : groups.map((group) => <GroupRow key={group.name} group={group} />)}
-        </section>
-      </main>
-
-      <nav className="bottom-nav" aria-label="Navegação principal">
-        <button><Home size={20} /><span>Início</span></button>
-        <button><Gamepad2 size={20} /><span>Jogos</span></button>
-        <button className="active"><MessageCircle size={20} /><span>Conversas</span></button>
-        <button><Trophy size={20} /><span>Ranking</span></button>
-        <button><UserRound size={20} /><span>Perfil</span></button>
-      </nav>
-    </div>
-  )
+export default function App(){
+  const [showSplash,setShowSplash]=useState(true),[session,setSession]=useState(null),[authLoading,setAuthLoading]=useState(true)
+  const [page,setPage]=useState('home'),[account,setAccount]=useState(null),[wallet,setWallet]=useState(null),[role,setRole]=useState('user'),[features,setFeatures]=useState({}),[dailyMessage,setDailyMessage]=useState('')
+  useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);setAuthLoading(false)});const {data:l}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(!s){setAccount(null);setWallet(null);setRole('user')}});return()=>l.subscription.unsubscribe()},[])
+  async function loadAccount(){if(!session?.user?.id)return;const id=session.user.id;const [p,w,r,f]=await Promise.all([supabase.from('profiles').select('*').eq('user_id',id).single(),supabase.from('wallets').select('*').eq('user_id',id).single(),supabase.from('user_roles').select('role').eq('user_id',id).single(),supabase.from('feature_flags').select('*')]);setAccount(p.data);setWallet(w.data);setRole(r.data?.role||'user');setFeatures(Object.fromEntries((f.data||[]).map(x=>[x.key,x.enabled])))}
+  useEffect(()=>{loadAccount()},[session?.user?.id])
+  async function claimDaily(){const {data,error}=await supabase.rpc('claim_daily_reward');setDailyMessage(error?error.message:`Dia ${data.streak}: +${data.coins} moedas${data.diamonds?` e +${data.diamonds} diamantes`:''}`);if(!error)loadAccount()}
+  if(showSplash)return <Splash onDone={()=>setShowSplash(false)}/>
+  if(authLoading)return <div className="loading-screen">Carregando PAI...</div>
+  if(!session)return <AuthScreen/>
+  const isOwner=role==='owner'
+  let content
+  if(page==='home') content=<HomePage account={account} wallet={wallet} onDaily={claimDaily} dailyMessage={dailyMessage}/>
+  else if(page==='chat') content=<ChatPage userId={session.user.id}/>
+  else if(page==='games') content=<GamesPage/>
+  else if(page==='ranking') content=<RankingPage userId={session.user.id}/>
+  else if(page==='profile') content=<ProfilePage account={account} setAccount={setAccount} isOwner={isOwner} onGoStore={()=>setPage('store')} onGoAdmin={()=>setPage('admin')}/>
+  else if(page==='store') content=<StorePage wallet={wallet} onWalletRefresh={loadAccount}/>
+  else if(page==='clans') content=<ClansPage feature={features.clans} wallet={wallet}/>
+  else if(page==='admin'&&isOwner) content=<AdminPage onRefresh={loadAccount}/>
+  else content=<HomePage account={account} wallet={wallet} onDaily={claimDaily} dailyMessage={dailyMessage}/>
+  return <div className="app-shell"><header className="topbar"><div><p className="eyebrow">{account?.rank_name||'Bronze 1'}</p><h1>PAI</h1></div><div className="top-actions"><button title="Loja" onClick={()=>setPage('store')}><ShoppingBag size={20}/></button><button title="Clãs" onClick={()=>setPage('clans')}><Crown size={20}/></button>{isOwner&&<button title="Administrador" onClick={()=>setPage('admin')}><ShieldCheck size={20}/></button>}<button className="notification-button"><Bell size={20}/><span/></button><button title="Sair" onClick={()=>supabase.auth.signOut()}><LogOut size={20}/></button></div></header>{content}<nav className="bottom-nav">{NAV.map(([id,Icon,label])=><button key={id} className={page===id?'active':''} onClick={()=>setPage(id)}><Icon size={20}/><span>{label}</span></button>)}</nav></div>
 }
