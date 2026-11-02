@@ -7,7 +7,8 @@ import VoiceAudioDock from './VoiceAudioDock'
 import RoomLiveExtras from './RoomLiveExtras'
 import GlobalSearch from './GlobalSearch'
 import OwnerControlCenter from './OwnerControlCenter'
+import ClanManageDock from './ClanManageDock'
 
 export default function AppWithPoints(){
-  return <><App2/><PhotoViewTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/></>
+  return <><App2/><PhotoViewTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/></>
 }
