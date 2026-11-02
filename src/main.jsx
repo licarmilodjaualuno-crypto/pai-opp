@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom'
 import App from './App2'
 import TopSearchDock from './TopSearchDock'
 import './styles.css'
+import './chatFilters.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
