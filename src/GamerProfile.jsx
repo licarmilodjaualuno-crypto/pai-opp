@@ -3,6 +3,7 @@ import { ArrowLeft, Crown, Edit3, Gear, Image as ImageIcon, Package, Share2, Tar
 import { supabase } from './lib/supabase'
 import './gamer-profile.css'
 import './gamer-profile-compact.css'
+import './gamer-profile-one-screen.css'
 
 function fmt(n){return Number(n||0).toLocaleString('pt-BR')}
 
