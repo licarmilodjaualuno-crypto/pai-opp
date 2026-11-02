@@ -5,6 +5,7 @@ import {
   Settings, Swords, Save, Coins, Gem
 } from 'lucide-react'
 import { supabase } from './lib/supabase'
+import './features.css'
 
 const NAV = [
   ['home', Home, 'Início'],
