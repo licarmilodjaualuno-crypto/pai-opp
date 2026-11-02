@@ -9,7 +9,8 @@ import GlobalSearch from './GlobalSearch'
 import OwnerControlCenter from './OwnerControlCenter'
 import ClanManageDock from './ClanManageDock'
 import ChatTimeTracker from './ChatTimeTracker'
+import GoogleLoginDock from './GoogleLoginDock'
 
 export default function AppWithPoints(){
-  return <><App2/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/></>
+  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/></>
 }
