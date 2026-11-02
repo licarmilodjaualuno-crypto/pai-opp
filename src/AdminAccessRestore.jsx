@@ -44,9 +44,24 @@ export default function AdminAccessRestore(){
     return ()=>document.removeEventListener('click',onClick,true)
   },[])
 
-  if(!allowed||!sidebar)return null
+  if(!allowed)return null
+
+  const button=<button
+    className={`admin-access-restored ${open?'active':''}`}
+    onClick={()=>setOpen(true)}
+    title="Abrir Painel do Administrador"
+    aria-label="Abrir Painel do Administrador"
+    style={sidebar?undefined:{
+      position:'fixed',right:'16px',bottom:'84px',zIndex:99998,
+      display:'flex',alignItems:'center',gap:'8px',padding:'12px 14px',
+      border:'1px solid rgba(139,92,246,.55)',borderRadius:'14px',
+      background:'rgba(15,10,32,.96)',color:'#fff',fontWeight:800,
+      boxShadow:'0 10px 32px rgba(0,0,0,.38)',cursor:'pointer'
+    }}
+  ><ShieldCheck size={20}/><span>Administrador</span></button>
+
   return <>
-    {createPortal(<button className={open?'active':''} onClick={()=>setOpen(true)} title="Abrir Painel do Administrador"><ShieldCheck/><span>Administrador</span></button>,sidebar)}
+    {createPortal(button,sidebar||document.body)}
     {open&&createPortal(<div className="ra-admin-grid" data-admin-access-restored style={{display:'none'}}/>,document.body)}
   </>
 }
