@@ -6,7 +6,8 @@ import ProfilePlus from './ProfilePlus'
 import VoiceAudioDock from './VoiceAudioDock'
 import RoomLiveExtras from './RoomLiveExtras'
 import GlobalSearch from './GlobalSearch'
+import OwnerControlCenter from './OwnerControlCenter'
 
 export default function AppWithPoints(){
-  return <><App2/><PhotoViewTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/></>
+  return <><App2/><PhotoViewTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/></>
 }
