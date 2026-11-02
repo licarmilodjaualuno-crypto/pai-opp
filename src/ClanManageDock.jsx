@@ -1,0 +1,15 @@
+import { useEffect, useState } from 'react'
+import { Crown, Shield, UserMinus, X } from 'lucide-react'
+import { supabase } from './lib/supabase'
+import './clanmanage.css'
+
+export default function ClanManageDock(){
+ const[session,setSession]=useState(null),[mine,setMine]=useState(null),[role,setRole]=useState(null),[members,setMembers]=useState([]),[profiles,setProfiles]=useState({}),[open,setOpen]=useState(false),[msg,setMsg]=useState('')
+ useEffect(()=>{supabase.auth.getSession().then(({data})=>{setSession(data.session);if(data.session)load(data.session.user.id)});const{data:l}=supabase.auth.onAuthStateChange((_e,s)=>{setSession(s);if(s)load(s.user.id)});return()=>l.subscription.unsubscribe()},[])
+ async function load(uid){const{data:cm}=await supabase.from('clan_members').select('*').eq('user_id',uid).maybeSingle();if(!cm){setMine(null);setRole(null);return}const[{data:c},{data:m},{data:p}]=await Promise.all([supabase.from('clans').select('*').eq('id',cm.clan_id).single(),supabase.from('clan_members').select('*').eq('clan_id',cm.clan_id).order('joined_at'),supabase.from('profiles').select('user_id,display_name,rank_name')]);setMine(c);setRole(cm.clan_role);setMembers(m||[]);setProfiles(Object.fromEntries((p||[]).map(x=>[x.user_id,x])))}
+ async function setClanRole(uid,newRole){const{error}=await supabase.rpc('set_clan_role',{p_clan_id:mine.id,p_user_id:uid,p_role:newRole});setMsg(error?error.message:'Cargo atualizado.');load(session.user.id)}
+ async function kick(uid){if(!confirm('Remover este membro do clã?'))return;const{error}=await supabase.rpc('kick_clan_member',{p_clan_id:mine.id,p_user_id:uid});setMsg(error?error.message:'Membro removido.');load(session.user.id)}
+ async function transfer(uid){if(!confirm('Transferir a liderança do clã?'))return;const{error}=await supabase.rpc('transfer_clan_owner',{p_clan_id:mine.id,p_user_id:uid});setMsg(error?error.message:'Liderança transferida.');load(session.user.id)}
+ if(!session||!mine||!['owner','admin'].includes(role))return null
+ return <><button className="clanmanage-fab" onClick={()=>setOpen(true)}><Crown size={17}/> Clã+</button>{open&&<div className="clanmanage-overlay"><div className="clanmanage-card"><header><div><small>{mine.tag}</small><h2>{mine.name} — membros</h2></div><button onClick={()=>setOpen(false)}><X/></button></header>{msg&&<p className="notice">{msg}</p>}<div className="clanmember-list">{members.map(m=>{const p=profiles[m.user_id]||{};return <div key={m.user_id}><div className="clanmember-avatar">{(p.display_name||'?').slice(0,1)}</div><div className="clanmember-main"><b>{p.display_name||'Usuário'}</b><span>{p.rank_name} • {m.clan_role}</span></div>{m.user_id!==session.user.id&&m.clan_role!=='owner'&&<div className="clanmember-actions">{role==='owner'&&<><button onClick={()=>setClanRole(m.user_id,m.clan_role==='admin'?'member':'admin')}><Shield/> {m.clan_role==='admin'?'Tirar admin':'Dar admin'}</button><button onClick={()=>transfer(m.user_id)}><Crown/> Transferir</button></>}<button onClick={()=>kick(m.user_id)}><UserMinus/> Remover</button></div>}</div>})}</div></div></div>}</>
+}
