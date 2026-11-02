@@ -1,0 +1,2 @@
+/* Remove controles antigos de salas públicas depois da retirada das salas de voz. */
+.settings-list > .setting-row:first-child { display: none !important; }
