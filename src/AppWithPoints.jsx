@@ -11,9 +11,10 @@ import ClanManageDock from './ClanManageDock'
 import ChatTimeTracker from './ChatTimeTracker'
 import GoogleLoginDock from './GoogleLoginDock'
 import ReferenceApp from './ReferenceApp'
+import TicTacToeEnhancedOverlay from './TicTacToeEnhancedOverlay'
 import './pai-final-theme.css'
 import './reference-match.css'
 
 export default function AppWithPoints(){
-  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/></>
+  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/></>
 }
