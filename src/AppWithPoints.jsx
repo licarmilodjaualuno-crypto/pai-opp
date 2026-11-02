@@ -16,9 +16,10 @@ import ProfilePhotoFeedPatch from './ProfilePhotoFeedPatch'
 import SettingsFunctionalDock from './SettingsFunctionalDock'
 import AdminDashboardOverlay from './AdminDashboardOverlay'
 import ProfileAvatarSync from './ProfileAvatarSync'
+import SocialFeaturesFix from './SocialFeaturesFix'
 import './pai-final-theme.css'
 import './reference-match.css'
 
 export default function AppWithPoints(){
-  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/><AdminDashboardOverlay/><ProfileAvatarSync/></>
+  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/><AdminDashboardOverlay/><ProfileAvatarSync/><SocialFeaturesFix/></>
 }
