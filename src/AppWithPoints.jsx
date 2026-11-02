@@ -4,7 +4,8 @@ import PhotoViewTracker from './PhotoViewTracker'
 import CommunityCenter from './CommunityCenter'
 import ProfilePlus from './ProfilePlus'
 import VoiceAudioDock from './VoiceAudioDock'
+import RoomLiveExtras from './RoomLiveExtras'
 
 export default function AppWithPoints(){
-  return <><App2/><PhotoViewTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/></>
+  return <><App2/><PhotoViewTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/></>
 }
