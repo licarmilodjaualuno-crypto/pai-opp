@@ -15,9 +15,10 @@ import TicTacToeEnhancedOverlay from './TicTacToeEnhancedOverlay'
 import ProfilePhotoFeedPatch from './ProfilePhotoFeedPatch'
 import SettingsFunctionalDock from './SettingsFunctionalDock'
 import AdminDashboardOverlay from './AdminDashboardOverlay'
+import ProfileAvatarSync from './ProfileAvatarSync'
 import './pai-final-theme.css'
 import './reference-match.css'
 
 export default function AppWithPoints(){
-  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/><AdminDashboardOverlay/></>
+  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/><AdminDashboardOverlay/><ProfileAvatarSync/></>
 }
