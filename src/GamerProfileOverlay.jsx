@@ -29,6 +29,12 @@ export default function GamerProfileOverlay(){
     return()=>document.removeEventListener('click',handler,true)
   },[])
 
+  useEffect(()=>{
+    if(open)document.body.classList.add('gp-open')
+    else document.body.classList.remove('gp-open')
+    return()=>document.body.classList.remove('gp-open')
+  },[open])
+
   function go(page){
     if(page==='profile-edit'){setOpen(false);setTimeout(()=>document.querySelector('.profileplus-fab')?.click(),80);return}
     setOpen(false)
@@ -52,5 +58,5 @@ export default function GamerProfileOverlay(){
   }
 
   if(!open||!account)return null
-  return <div style={{position:'fixed',inset:0,zIndex:1000,overflow:'auto',background:'#070912'}}><GamerProfile account={account} wallet={wallet} onGo={go}/></div>
+  return <div style={{position:'fixed',inset:0,zIndex:2147483000,overflow:'hidden',background:'#070912'}}><GamerProfile account={account} wallet={wallet} onGo={go}/></div>
 }
