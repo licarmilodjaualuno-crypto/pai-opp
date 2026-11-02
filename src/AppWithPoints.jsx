@@ -1,14 +1,9 @@
 import App2 from './App2'
-import PointsCenter from './PointsCenter'
 import PhotoViewTracker from './PhotoViewTracker'
 import CommunityCenter from './CommunityCenter'
 import ProfilePlus from './ProfilePlus'
-import VoiceAudioDock from './VoiceAudioDock'
-import RoomLiveExtras from './RoomLiveExtras'
 import GlobalSearch from './GlobalSearch'
 import OwnerControlCenter from './OwnerControlCenter'
-import ClanManageDock from './ClanManageDock'
-import ChatTimeTracker from './ChatTimeTracker'
 import GoogleLoginDock from './GoogleLoginDock'
 import ReferenceApp from './ReferenceApp'
 import TicTacToeEnhancedOverlay from './TicTacToeEnhancedOverlay'
@@ -18,11 +13,9 @@ import AdminDashboardOverlay from './AdminDashboardOverlay'
 import AdminAccessRestore from './AdminAccessRestore'
 import ProfileAvatarSync from './ProfileAvatarSync'
 import SocialFeaturesFixV2 from './SocialFeaturesFixV2'
-import NeonStoreOverlay from './NeonStoreOverlay'
-import RankingSocialOverlay from './RankingSocialOverlay'
 import './pai-final-theme.css'
 import './reference-match.css'
 
 export default function AppWithPoints(){
-  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/><AdminDashboardOverlay/><AdminAccessRestore/><ProfileAvatarSync/><SocialFeaturesFixV2/><NeonStoreOverlay/><RankingSocialOverlay/></>
+  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><CommunityCenter/><ProfilePlus/><GlobalSearch/><OwnerControlCenter/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/><AdminDashboardOverlay/><AdminAccessRestore/><ProfileAvatarSync/><SocialFeaturesFixV2/></>
 }
