@@ -8,7 +8,8 @@ import RoomLiveExtras from './RoomLiveExtras'
 import GlobalSearch from './GlobalSearch'
 import OwnerControlCenter from './OwnerControlCenter'
 import ClanManageDock from './ClanManageDock'
+import ChatTimeTracker from './ChatTimeTracker'
 
 export default function AppWithPoints(){
-  return <><App2/><PhotoViewTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/></>
+  return <><App2/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/></>
 }
