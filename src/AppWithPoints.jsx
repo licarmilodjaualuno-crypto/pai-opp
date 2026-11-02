@@ -10,10 +10,10 @@ import OwnerControlCenter from './OwnerControlCenter'
 import ClanManageDock from './ClanManageDock'
 import ChatTimeTracker from './ChatTimeTracker'
 import GoogleLoginDock from './GoogleLoginDock'
-import GamerProfileOverlay from './GamerProfileOverlay'
+import ReferenceApp from './ReferenceApp'
 import './pai-final-theme.css'
 import './reference-match.css'
 
 export default function AppWithPoints(){
-  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><GamerProfileOverlay/></>
+  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/></>
 }
