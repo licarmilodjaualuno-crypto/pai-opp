@@ -13,9 +13,10 @@ import GoogleLoginDock from './GoogleLoginDock'
 import ReferenceApp from './ReferenceApp'
 import TicTacToeEnhancedOverlay from './TicTacToeEnhancedOverlay'
 import ProfilePhotoFeedPatch from './ProfilePhotoFeedPatch'
+import SettingsFunctionalDock from './SettingsFunctionalDock'
 import './pai-final-theme.css'
 import './reference-match.css'
 
 export default function AppWithPoints(){
-  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/></>
+  return <><App2/><GoogleLoginDock/><PhotoViewTracker/><ChatTimeTracker/><PointsCenter/><CommunityCenter/><ProfilePlus/><VoiceAudioDock/><RoomLiveExtras/><GlobalSearch/><OwnerControlCenter/><ClanManageDock/><ReferenceApp/><TicTacToeEnhancedOverlay/><ProfilePhotoFeedPatch/><SettingsFunctionalDock/></>
 }
