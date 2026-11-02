@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Star, X, Save } from 'lucide-react'
 import { supabase } from './lib/supabase'
+import './points.css'
 
 const LABELS={
   points_daily_login:'Login diário',
