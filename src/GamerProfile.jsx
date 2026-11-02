@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
-import { ArrowLeft, Crown, Edit3, Gear, Image as ImageIcon, Package, Share2, Target, Trophy, Users, UserPlus, QrCode, MoreVertical, Plus, Camera } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { ArrowLeft, Crown, Edit3, Gear, Image as ImageIcon, Package, Share2, Target, Trophy, Users, UserPlus, QrCode, MoreVertical, Plus } from 'lucide-react'
 import { supabase } from './lib/supabase'
 import './gamer-profile.css'
+import './gamer-profile-compact.css'
 
 function fmt(n){return Number(n||0).toLocaleString('pt-BR')}
 
