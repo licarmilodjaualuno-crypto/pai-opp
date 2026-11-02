@@ -7,6 +7,7 @@ const LABELS={
   points_daily_login:'Login diário',
   points_daily_reward:'Recompensa diária',
   points_post_publish:'Publicar foto',
+  points_post_view_received:'Receber visualização válida',
   points_post_like_received:'Receber curtida válida',
   points_post_comment_received:'Receber primeiro comentário válido',
   points_conversation_participation:'Participar de conversa',
@@ -47,7 +48,7 @@ export default function PointsCenter(){
   return <>
     <button className="points-fab" onClick={()=>{setOpen(true);load()}}><Star size={18}/> Pontos</button>
     {open&&<div className="points-overlay"><div className="points-sheet"><div className="points-head"><div><span className="points-kicker">PAI</span><h2>Pontos diários e recompensas</h2><p>Veja como subir de patente e quanto cada atividade vale.</p></div><button onClick={()=>setOpen(false)}><X/></button></div>
-      <div className="points-summary"><div><span>Ganhos hoje</span><strong>+{totalToday.toLocaleString('pt-BR')} pts</strong></div><div><span>Marco especial</span><strong>1h30 = 1.000 pts</strong></div></div>
+      <div className="points-summary"><div><span>Ganhos hoje</span><strong>+{totalToday.toLocaleString('pt-BR')} pts</strong></div><div><span>Pontos nas fotos</span><strong>👁️ 10 • ❤️ 20 • 💬 50 pts</strong></div></div>
       <div className="points-grid">{rows.map(r=><div className="point-rule" key={r.key}><div><b>{LABELS[r.key]||r.key}</b><span>{r.description}</span></div><strong>+{Number(r.value_num||0).toLocaleString('pt-BR')} pts</strong></div>)}</div>
       <h3>Últimos pontos recebidos</h3><div className="point-history">{history.length?history.slice(0,12).map(h=><div key={h.id}><span>{h.source.replaceAll('_',' ')}</span><b>+{Number(h.delta||0).toLocaleString('pt-BR')}</b></div>):<p className="muted">Você ainda não recebeu pontos.</p>}</div>
       {role==='owner'&&<div className="points-admin"><h3>Painel OWNER — editar pontos</h3><p className="muted">Somente você pode mudar estes valores.</p>{rows.map(r=><div className="point-edit" key={r.key}><span>{LABELS[r.key]||r.key}</span><input type="number" min="0" value={drafts[r.key]??r.value_num} onChange={e=>setDrafts(d=>({...d,[r.key]:e.target.value}))}/><button onClick={()=>save(r)}><Save size={16}/> Salvar</button></div>)}{msg&&<p className="notice">{msg}</p>}</div>}
