@@ -1,4 +1,4 @@
-import {useEffect,useMemo,useState} from 'react'
+import {useEffect,useMemo,useRef,useState} from 'react'
 import {ArrowLeft,Bot,Gamepad2,Search,UserPlus,Users,X} from 'lucide-react'
 import {supabase} from './lib/supabase'
 import './tic-tac-toe-enhanced.css'
@@ -63,6 +63,39 @@ export default function TicTacToeEnhancedOverlay(){
   const[opponent,setOpponent]=useState(null)
   const[notice,setNotice]=useState('')
   const[incoming,setIncoming]=useState([])
+  const audioRef=useRef(null)
+  const lastOutcomeRef=useRef(null)
+
+  function audioCtx(){
+    if(typeof window==='undefined')return null
+    const Ctx=window.AudioContext||window.webkitAudioContext
+    if(!Ctx)return null
+    if(!audioRef.current)audioRef.current=new Ctx()
+    if(audioRef.current.state==='suspended')audioRef.current.resume?.()
+    return audioRef.current
+  }
+
+  function tone(freq=440,duration=.08,volume=.05,type='sine',delay=0){
+    const ctx=audioCtx();if(!ctx)return
+    const start=ctx.currentTime+delay
+    const osc=ctx.createOscillator(),gain=ctx.createGain()
+    osc.type=type;osc.frequency.setValueAtTime(freq,start)
+    gain.gain.setValueAtTime(0.0001,start)
+    gain.gain.exponentialRampToValueAtTime(Math.max(.0001,volume),start+.01)
+    gain.gain.exponentialRampToValueAtTime(.0001,start+duration)
+    osc.connect(gain);gain.connect(ctx.destination);osc.start(start);osc.stop(start+duration+.02)
+  }
+
+  function playSound(kind){
+    try{
+      if(kind==='move'){tone(520,.07,.045,'sine');tone(700,.055,.025,'sine',.035)}
+      else if(kind==='opponent'){tone(360,.07,.04,'triangle');tone(460,.06,.022,'triangle',.035)}
+      else if(kind==='win'){tone(523,.1,.05,'sine');tone(659,.12,.05,'sine',.1);tone(784,.18,.055,'sine',.22)}
+      else if(kind==='lose'){tone(330,.12,.045,'triangle');tone(262,.18,.045,'triangle',.12)}
+      else if(kind==='draw'){tone(440,.1,.04,'sine');tone(392,.13,.035,'sine',.1)}
+      else if(kind==='reset'){tone(300,.05,.03,'square');tone(420,.07,.025,'square',.05)}
+    }catch{}
+  }
 
   useEffect(()=>{
     const onClick=e=>{
@@ -91,17 +124,26 @@ export default function TicTacToeEnhancedOverlay(){
 
   const outcome=useMemo(()=>mode==='solo'?winnerOf(board):game?.status==='finished'?(game?.winner_id?game.winner_id:'D'):null,[mode,board,game])
 
-  function startSolo(){setMode('solo');setBoard(emptyBoard());setAiThinking(false);setNotice('Você joga com X. Faça 5 em linha para vencer.')}
-  function resetSolo(){setBoard(emptyBoard());setAiThinking(false);setNotice('Nova partida iniciada.')}
+  useEffect(()=>{
+    if(!outcome||lastOutcomeRef.current===outcome)return
+    lastOutcomeRef.current=outcome
+    if(outcome==='D')playSound('draw')
+    else if(mode==='solo')playSound(outcome==='X'?'win':'lose')
+    else playSound(game?.winner_id===uid?'win':'lose')
+  },[outcome,mode,game?.winner_id,uid])
+
+  function startSolo(){lastOutcomeRef.current=null;setMode('solo');setBoard(emptyBoard());setAiThinking(false);setNotice('Você joga com X. Faça 5 em linha para vencer.');playSound('reset')}
+  function resetSolo(){lastOutcomeRef.current=null;setBoard(emptyBoard());setAiThinking(false);setNotice('Nova partida iniciada.');playSound('reset')}
 
   function soloPlay(i){
     if(aiThinking||board[i]||winnerOf(board))return
+    playSound('move')
     const next=[...board];next[i]='X';setBoard(next)
     if(winnerOf(next))return
     setAiThinking(true);setNotice('A IA está pensando…')
     setTimeout(()=>{
       const ai=chooseAI(next);if(ai===undefined){setAiThinking(false);return}
-      const b=[...next];b[ai]='O';setBoard(b);setAiThinking(false);setNotice(winnerOf(b)?'Partida encerrada.':'Sua vez.')
+      const b=[...next];b[ai]='O';playSound('opponent');setBoard(b);setAiThinking(false);setNotice(winnerOf(b)?'Partida encerrada.':'Sua vez.')
     },360)
   }
 
@@ -110,14 +152,14 @@ export default function TicTacToeEnhancedOverlay(){
     const{data,error}=await supabase.rpc('create_ttt_friend_game',{p_friend:friend.user_id})
     if(error){setNotice(error.message);return}
     const{data:g}=await supabase.from('game_sessions').select('*').eq('id',data).single()
-    setOpponent(friend);setMode('friend');setGame(g);setMoves([]);setNotice(`Convite enviado para ${friend.display_name}. Aguardando aceitar…`);watchGame(data)
+    lastOutcomeRef.current=null;setOpponent(friend);setMode('friend');setGame(g);setMoves([]);setNotice(`Convite enviado para ${friend.display_name}. Aguardando aceitar…`);watchGame(data)
   }
 
   async function accept(g){
     const{error}=await supabase.rpc('accept_ttt_game',{p_game:g.id});if(error){setNotice(error.message);return}
     const oppId=g.state?.player_x
     const{data:p}=await supabase.from('profiles').select('user_id,display_name,avatar_url,rank_name').eq('user_id',oppId).single()
-    setOpponent(p||null);setMode('friend');setGame({...g,status:'active'});setNotice('Partida iniciada. Aguarde sua vez.');loadMoves(g.id);watchGame(g.id)
+    lastOutcomeRef.current=null;setOpponent(p||null);setMode('friend');setGame({...g,status:'active'});setNotice('Partida iniciada. Aguarde sua vez.');loadMoves(g.id);watchGame(g.id);playSound('reset')
   }
 
   async function loadMoves(gameId){const{data}=await supabase.from('ttt_moves').select('*').eq('game_id',gameId).order('move_no');setMoves(data||[])}
@@ -126,11 +168,11 @@ export default function TicTacToeEnhancedOverlay(){
     loadMoves(gameId)
     supabase.channel(`tte-${gameId}`)
       .on('postgres_changes',{event:'UPDATE',schema:'public',table:'game_sessions',filter:`id=eq.${gameId}`},p=>setGame(p.new))
-      .on('postgres_changes',{event:'INSERT',schema:'public',table:'ttt_moves',filter:`game_id=eq.${gameId}`},p=>setMoves(v=>v.some(x=>x.id===p.new.id)?v:[...v,p.new].sort((a,b)=>a.move_no-b.move_no)))
+      .on('postgres_changes',{event:'INSERT',schema:'public',table:'ttt_moves',filter:`game_id=eq.${gameId}`},p=>setMoves(v=>{if(v.some(x=>x.id===p.new.id))return v; if(p.new.user_id!==uid)playSound('opponent'); return [...v,p.new].sort((a,b)=>a.move_no-b.move_no)}))
       .subscribe()
   }
 
-  useEffect(()=>()=>{supabase.getChannels().filter(c=>c.topic?.startsWith('realtime:tte-')).forEach(c=>supabase.removeChannel(c))},[])
+  useEffect(()=>()=>{supabase.getChannels().filter(c=>c.topic?.startsWith('realtime:tte-')).forEach(c=>supabase.removeChannel(c));audioRef.current?.close?.()},[])
 
   const friendBoard=useMemo(()=>{const b=emptyBoard();for(const m of moves)b[m.cell]=m.symbol;return b},[moves])
   const myTurn=!!(game&&uid&&game.status==='active'&&game.state?.turn===uid)
@@ -138,12 +180,12 @@ export default function TicTacToeEnhancedOverlay(){
 
   async function friendPlay(i){
     if(!myTurn||friendBoard[i]||game?.status!=='active')return
-    setNotice('Jogada enviada…')
+    playSound('move');setNotice('Jogada enviada…')
     const{error}=await supabase.rpc('ttt_make_move',{p_game:game.id,p_cell:i})
     if(error)setNotice(error.message);else setNotice('Agora aguarde seu amigo jogar.')
   }
 
-  function close(){setOpen(false);setMode(null);setGame(null);setMoves([]);setNotice('')}
+  function close(){setOpen(false);setMode(null);setGame(null);setMoves([]);setNotice('');lastOutcomeRef.current=null}
   if(!open)return null
   const filtered=friends.filter(f=>(f.display_name||'').toLowerCase().includes(search.toLowerCase()))
   const displayBoard=mode==='friend'?friendBoard:board
