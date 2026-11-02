@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { ArrowLeft, Crown, Edit3, Gear, Image as ImageIcon, Package, Share2, Target, Trophy, Users, UserPlus, QrCode, MoreVertical, Plus } from 'lucide-react'
+import { ArrowLeft, Crown, Edit3, Settings, Image as ImageIcon, Package, Share2, Target, Trophy, Users, UserPlus, QrCode, MoreVertical, Plus } from 'lucide-react'
 import { supabase } from './lib/supabase'
 import './gamer-profile.css'
 import './gamer-profile-compact.css'
@@ -83,7 +83,7 @@ export default function GamerProfile({account,wallet,onGo}){
 
       <section className="gp-wide-actions">
         <button onClick={()=>onGo('profile-edit')}><Edit3/>Editar perfil</button>
-        <button onClick={()=>onGo('settings')}><Gear/>Configurações</button>
+        <button onClick={()=>onGo('settings')}><Settings/>Configurações</button>
       </section>
 
       <section className="gp-photos">
