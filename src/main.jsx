@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
-import App from './App2'
+import App from './App'
 import TopSearchDock from './TopSearchDock'
 import './styles.css'
 import './chatFilters.css'
